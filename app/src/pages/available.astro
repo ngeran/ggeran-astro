@@ -21,7 +21,7 @@ const items: CatalogueItem[] = projects.map((p) => ({
 ---
 <BaseLayout title="Available Works" description={site.availableIntro ?? undefined}>
   <section class="px-edge-margin-mobile lg:px-edge-margin-desktop py-section-gap border-b border-structural-gray">
-    <div class="max-w-[1440px] mx-auto">
+    <div class="max-w-[1680px]">
       <span class="font-display text-label-caps text-on-surface-variant mb-4 block">
         AVAILABLE WORKS / FOR SALE
       </span>
@@ -31,7 +31,7 @@ const items: CatalogueItem[] = projects.map((p) => ({
     </div>
   </section>
   <section class="px-edge-margin-mobile lg:px-edge-margin-desktop py-section-gap bg-background">
-    <div class="max-w-[1440px] mx-auto">
+    <div class="max-w-[1680px]">
       <Catalogue items={items} noun="Works" />
       {site.availableIntro && (
         <p class="mt-section-gap font-body text-caption text-on-surface-variant max-w-md text-center mx-auto">

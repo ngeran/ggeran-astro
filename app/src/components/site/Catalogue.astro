@@ -87,16 +87,16 @@ function eraOf(year: number | null): string {
         data-era={eraOf(i.year)}
         data-year={i.year ?? 0}
         data-ref={i.ref ?? ""}
-        class="group py-6 md:py-8 grid grid-cols-[6rem_1fr] md:grid-cols-12 gap-gutter items-center w-full hover:bg-surface-container transition-colors duration-300"
+        class="group py-6 md:py-8 grid grid-cols-[6rem_1fr] md:grid-cols-[6rem_8rem_1fr_auto_auto] gap-x-4 md:gap-x-6 items-center w-full -mx-3 px-3 md:-mx-4 md:px-4 hover:bg-surface-container transition-colors duration-200"
       >
-        <div class="hidden md:block md:col-span-2 font-display text-label-caps text-on-surface-variant opacity-50 whitespace-nowrap">
+        <div class="hidden md:block font-display text-label-caps text-on-surface-variant opacity-50 whitespace-nowrap">
           {i.ref ? `#${i.ref}` : "—"}
         </div>
-        <div class="md:col-span-2">
+        <div>
           {i.image && (
             <a
               href={i.href}
-              class="block aspect-[4/5] bg-surface-container-low group-hover:bg-surface-container overflow-hidden grayscale hover:grayscale-0 transition-all duration-700"
+              class="block aspect-[4/5] bg-surface-container-low group-hover:bg-surface-container overflow-hidden grayscale hover:grayscale-0 transition-all duration-500"
             >
               <img
                 src={i.image}
@@ -105,19 +105,19 @@ function eraOf(year: number | null): string {
                 height="500"
                 loading="lazy"
                 decoding="async"
-                class="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000"
+                class="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
               />
             </a>
           )}
         </div>
-        <div class="md:col-span-4 min-w-0">
+        <div class="min-w-0">
           <div class="font-display text-[10px] text-on-surface-variant uppercase mb-1 md:hidden whitespace-nowrap">
             Ref: {i.ref ? `#${i.ref}` : "—"}
           </div>
           <h3 class="font-display text-headline-md text-primary uppercase">
             <a
               href={i.href}
-              class="group-hover:translate-x-2 inline-block transition-transform duration-500"
+              class="group-hover:translate-x-1 inline-block transition-transform duration-300"
             >
               {i.title}
             </a>
@@ -133,12 +133,12 @@ function eraOf(year: number | null): string {
             {i.line2 && <span>{i.line2}</span>}
           </div>
         </div>
-        <div class="hidden md:block md:col-span-1">
+        <div class="hidden md:block">
           <span class="font-display text-label-caps text-primary whitespace-nowrap">
             {i.year ?? "—"}
           </span>
         </div>
-        <div class="hidden md:block md:col-span-3 md:text-right font-body text-caption text-on-surface-variant leading-relaxed">
+        <div class="hidden md:block md:text-right font-body text-caption text-on-surface-variant leading-relaxed">
           {i.line1 && <p>{i.line1}</p>}
           {i.line2 && <p>{i.line2}</p>}
         </div>

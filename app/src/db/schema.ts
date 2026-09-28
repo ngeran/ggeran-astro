@@ -29,7 +29,7 @@ export const projects = sqliteTable(
     createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
     updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
   },
-  (t) => ({ slugIdx: uniqueIndex("projects_slug_idx").on(t.slug) }),
+  (t) => [uniqueIndex("projects_slug_idx").on(t.slug)],
 );
 
 export const publications = sqliteTable(
@@ -54,7 +54,7 @@ export const publications = sqliteTable(
     createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
     updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
   },
-  (t) => ({ slugIdx: uniqueIndex("publications_slug_idx").on(t.slug) }),
+  (t) => [uniqueIndex("publications_slug_idx").on(t.slug)],
 );
 
 export const news = sqliteTable(
@@ -70,7 +70,7 @@ export const news = sqliteTable(
     createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
     updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
   },
-  (t) => ({ slugIdx: uniqueIndex("news_slug_idx").on(t.slug) }),
+  (t) => [uniqueIndex("news_slug_idx").on(t.slug)],
 );
 
 /**

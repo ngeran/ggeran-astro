@@ -1,5 +1,4 @@
 import { SignJWT, jwtVerify } from "jose";
-import { getEnv } from "@/lib/env";
 
 /**
  * Lightweight single-admin session (jose-signed JWT in an HttpOnly cookie).
