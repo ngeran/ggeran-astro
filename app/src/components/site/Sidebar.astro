@@ -192,11 +192,12 @@ const linkCls = (href: string) =>
 <script>
   // Mobile menu — open/close with focus management. The overlay starts
   // `inert` server-side (its links are out of the tab order when closed).
-  const overlay = document.querySelector<HTMLElement>("[data-menu-overlay]");
-  const openBtn = document.querySelector<HTMLButtonElement>("[data-menu-open]");
-  const closeBtn = document.querySelector<HTMLButtonElement>("[data-menu-close]");
-
+  // Listeners are delegated on `document` (like the theme toggle in
+  // BaseLayout) so they survive ClientRouter page swaps: a swap replaces
+  // these DOM nodes, and this module only executes once per full load.
   function setOpen(open: boolean) {
+    const overlay = document.querySelector<HTMLElement>("[data-menu-overlay]");
+    const openBtn = document.querySelector<HTMLButtonElement>("[data-menu-open]");
     if (!overlay || !openBtn) return;
     overlay.classList.toggle("opacity-0", !open);
     overlay.classList.toggle("-translate-y-2", !open);
@@ -211,9 +212,15 @@ const linkCls = (href: string) =>
     }
   }
 
-  openBtn?.addEventListener("click", () => setOpen(true));
-  closeBtn?.addEventListener("click", () => setOpen(false));
-  overlay?.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") setOpen(false);
+  const menuIsOpen = () =>
+    !document.querySelector("[data-menu-overlay]")?.hasAttribute("inert");
+
+  document.addEventListener("click", (e) => {
+    const el = e.target as HTMLElement;
+    if (el.closest("[data-menu-open]")) setOpen(true);
+    else if (el.closest("[data-menu-close]")) setOpen(false);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && menuIsOpen()) setOpen(false);
   });
 </script>

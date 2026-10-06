@@ -156,8 +156,13 @@ function eraOf(year: number | null): string {
 
 <script>
   // Filter (by era attribute) + sort (DOM reorder) + counter.
-  const root = document.querySelector<HTMLElement>("[data-catalogue]");
-  if (root) {
+  // astro:page-load fires on full loads AND after every ClientRouter swap;
+  // re-binding inside it keeps this working across soft navigations even
+  // though the module itself executes only once per full load (each swap
+  // brings fresh DOM nodes — no double-binding risk).
+  document.addEventListener("astro:page-load", () => {
+    const root = document.querySelector<HTMLElement>("[data-catalogue]");
+    if (!root) return;
     const eraSel = root.querySelector<HTMLSelectElement>("[data-filter-era]");
     const sortBtns = root.querySelectorAll<HTMLButtonElement>("[data-sort]");
     const list = root.querySelector<HTMLElement>("[data-list]")!;
@@ -199,5 +204,5 @@ function eraOf(year: number | null): string {
         apply();
       });
     }
-  }
+  });
 </script>

@@ -112,7 +112,7 @@ db-apply MODE:
     [ ${#files[@]} -gt 0 ] || { echo "no migrations — run: just db-generate"; exit 1; }
     for f in "${files[@]}"; do
       echo "→ applying $(basename "$f")"
-      (cd app && npx wrangler d1 execute {{db_name}} --{{MODE}} --file="$f")
+      (cd app && npx wrangler d1 execute {{db_name}} --{{MODE}} --file="drizzle/$(basename "$f")")
     done
 
 # Generate + apply the seed content.  MODE: local | remote

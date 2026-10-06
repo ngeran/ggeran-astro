@@ -57,56 +57,63 @@ const { images, altPrefix = "Image" } = Astro.props;
 <script type="application/json" data-gallery-images set:html={JSON.stringify(images)} />
 
 <script>
-  const root = document.querySelector("[data-gallery]");
-  const dialog = document.querySelector<HTMLDialogElement>("[data-lightbox]");
-  const img = dialog?.querySelector<HTMLImageElement>("[data-lightbox-img]");
-  const frame = dialog?.querySelector<HTMLElement>("[data-frame]");
-  let images: string[] = [];
-  let altPrefix = "Image";
-  let idx = 0;
+  // astro:page-load fires on full loads AND after every ClientRouter swap;
+  // this module executes only once per full load, so re-binding inside the
+  // event is what keeps the lightbox alive across soft navigations (each
+  // swap brings fresh DOM nodes — no double-binding risk). Pages without a
+  // gallery no-op via the root check.
+  document.addEventListener("astro:page-load", () => {
+    const root = document.querySelector("[data-gallery]");
+    const dialog = document.querySelector<HTMLDialogElement>("[data-lightbox]");
+    const img = dialog?.querySelector<HTMLImageElement>("[data-lightbox-img]");
+    const frame = dialog?.querySelector<HTMLElement>("[data-frame]");
+    let images: string[] = [];
+    let altPrefix = "Image";
+    let idx = 0;
 
-  try {
-    images = JSON.parse(
-      document.querySelector<HTMLScriptElement>("[data-gallery-images]")?.textContent ?? "[]",
-    );
-    altPrefix = root?.getAttribute("data-gallery-alt") ?? altPrefix;
-  } catch {}
+    try {
+      images = JSON.parse(
+        document.querySelector<HTMLScriptElement>("[data-gallery-images]")?.textContent ?? "[]",
+      );
+      altPrefix = root?.getAttribute("data-gallery-alt") ?? altPrefix;
+    } catch {}
 
-  const show = (i: number) => {
-    if (!img || !images.length) return;
-    idx = (i + images.length) % images.length;
-    img.src = images[idx];
-    img.alt = `${altPrefix} ${idx + 1}`;
-  };
+    const show = (i: number) => {
+      if (!img || !images.length) return;
+      idx = (i + images.length) % images.length;
+      img.src = images[idx];
+      img.alt = `${altPrefix} ${idx + 1}`;
+    };
 
-  root?.addEventListener("click", (e) => {
-    const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-idx]");
-    if (!btn || !dialog) return;
-    show(Number(btn.dataset.idx));
-    dialog.showModal();
+    root?.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-idx]");
+      if (!btn || !dialog) return;
+      show(Number(btn.dataset.idx));
+      dialog.showModal();
+    });
+
+    dialog?.addEventListener("click", (e) => {
+      // Click on the backdrop (outside the frame) closes.
+      if (frame && !frame.contains(e.target as Node) && !(e.target as HTMLElement).closest("button")) {
+        dialog.close();
+      }
+    });
+    dialog?.addEventListener("close", () => {
+      if (img) img.src = "";
+    });
+
+    const nav = (dir: number) => show(idx + dir);
+    dialog?.querySelector("[data-close]")?.addEventListener("click", () => dialog.close());
+    dialog?.querySelector("[data-prev]")?.addEventListener("click", () => nav(-1));
+    dialog?.querySelector("[data-next]")?.addEventListener("click", () => nav(1));
+    // Arrow keys when the dialog is open (Escape + focus trap are native).
+    dialog?.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") nav(-1);
+      if (e.key === "ArrowRight") nav(1);
+    });
+
+    // Download friction (deterrent only).
+    frame?.addEventListener("contextmenu", (e) => e.preventDefault());
+    dialog?.querySelector("[data-lightbox-img]")?.addEventListener("dragstart", (e) => e.preventDefault());
   });
-
-  dialog?.addEventListener("click", (e) => {
-    // Click on the backdrop (outside the frame) closes.
-    if (frame && !frame.contains(e.target as Node) && !(e.target as HTMLElement).closest("button")) {
-      dialog.close();
-    }
-  });
-  dialog?.addEventListener("close", () => {
-    if (img) img.src = "";
-  });
-
-  const nav = (dir: number) => show(idx + dir);
-  dialog?.querySelector("[data-close]")?.addEventListener("click", () => dialog.close());
-  dialog?.querySelector("[data-prev]")?.addEventListener("click", () => nav(-1));
-  dialog?.querySelector("[data-next]")?.addEventListener("click", () => nav(1));
-  // Arrow keys when the dialog is open (Escape + focus trap are native).
-  dialog?.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") nav(-1);
-    if (e.key === "ArrowRight") nav(1);
-  });
-
-  // Download friction (deterrent only).
-  frame?.addEventListener("contextmenu", (e) => e.preventDefault());
-  dialog?.querySelector("[data-lightbox-img]")?.addEventListener("dragstart", (e) => e.preventDefault());
 </script>
